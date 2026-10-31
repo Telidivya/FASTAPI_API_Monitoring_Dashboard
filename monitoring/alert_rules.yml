@@ -1,0 +1,53 @@
+groups:
+  - name: fastapi-monitoring-alerts
+    rules:
+      - alert: APIServiceDown
+        expr: up{job="fastapi"} == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI service is unreachable"
+          description: "Prometheus has been unable to scrape the FastAPI service for 15 seconds."
+
+      - alert: APIHighResponseTime
+        expr: histogram_quantile(0.95, sum by (le) (rate(api_request_duration_seconds_bucket[2m]))) > 3
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "FastAPI response time is high"
+          description: "95th percentile request latency has been above 3 seconds for 30 seconds."
+
+      
+      - alert: APIHTTP500Errors
+        expr: sum(increase(api_requests_total{status_code="500"}[5m])) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HTTP 500 errors detected"
+          description: "The API has returned HTTP 500 errors during the last 5 minutes."
+
+      - alert: APIHighFailureRate
+        expr: |
+          (
+            sum(rate(api_requests_total{status_code=~"4..|5.."}[2m]))
+            /
+            clamp_min(sum(rate(api_requests_total[2m])), 0.001)
+          ) > 0.2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "FastAPI failure rate is high"
+          description: "More than 20% of requests have returned 4xx or 5xx responses."
+
+      - alert: APIHealthEndpointFailing
+        expr: probe_success{job="fastapi-health"} == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI health check failed"
+          description: "The Blackbox Exporter probe reports that the FastAPI /health endpoint is not returning HTTP 200."

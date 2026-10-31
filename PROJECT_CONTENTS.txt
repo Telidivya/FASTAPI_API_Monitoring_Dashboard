@@ -1,0 +1,17 @@
+.env.example
+.gitignore
+Dockerfile
+INTERVIEW_GUIDE.md
+README.md
+app/__init__.py
+app/main.py
+docker-compose.yml
+monitoring/alert_rules.yml
+monitoring/alertmanager.yml
+monitoring/grafana/dashboards/fastapi-monitoring.json
+monitoring/grafana/provisioning/dashboards/dashboard.yml
+monitoring/grafana/provisioning/datasources/prometheus.yml
+monitoring/prometheus.yml
+requirements.txt
+scripts/smoke_test.py
+tests/test_api.py

@@ -1,0 +1,28 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "demo-notifications"
+  group_by: ["alertname", "severity"]
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 2h
+
+receivers:
+  # This empty receiver allows the stack to start without exposing personal credentials.
+  # Configure email_configs or slack_configs below to enable real notifications.
+  - name: "demo-notifications"
+    # Example email receiver (replace all example values; do not commit credentials):
+    # email_configs:
+    #   - to: "your-alerts@example.com"
+    #     from: "prometheus@example.com"
+    #     smarthost: "smtp.example.com:587"
+    #     auth_username: "your-smtp-user"
+    #     auth_password: "YOUR_SMTP_PASSWORD"
+    #     require_tls: true
+    #
+    # Example Slack receiver:
+    # slack_configs:
+    #   - api_url: "https://hooks.slack.com/services/REPLACE/ME"
+    #     channel: "#api-alerts"
+    #     send_resolved: true
